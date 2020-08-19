@@ -51,7 +51,8 @@ use RegistersUsers;
                     'name' => ['required', 'string', 'max:255'],
                     'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                     'password' => ['required', 'string', 'min:6', 'confirmed'],
-                    'hobbies.*' => ['required']
+                    'hobbies' => ['array', 'min:1', 'required'],
+                    'gender' => ['required'],
         ]);
     }
 
@@ -67,6 +68,7 @@ use RegistersUsers;
                     'name' => $data['name'],
                     'email' => $data['email'],
                     'password' => Hash::make($data['password']),
+                    'gender' => $data['gender'],
         ]);
         $data1->hobbies()->sync($data['hobbies']);
         return $data1;
