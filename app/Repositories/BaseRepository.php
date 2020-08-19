@@ -15,9 +15,6 @@ class BaseRepository implements BaseRepositoryInterface {
     }
 
     public function destroy($id) {
-        $record = $this->show($id);
-        $path = $record->picture_url->upload_path;
-        _unlink($path . "/" . $record->picture);
         return $this->model->destroy($id);
     }
 
@@ -30,32 +27,14 @@ class BaseRepository implements BaseRepositoryInterface {
     }
 
     public function create($request) {
-        $dataArr = $request->all();
-        if ($request->has('picture')) {
-            $dataArr['picture'] = $this->upload($request);
-        }
-        //insert record
-        return $this->model->create($dataArr);
+
+        return $this->model->create($request);
     }
 
     public function update($request, $id) {
-        $user = $this->show($id);
-        $dataArr = $request->all();
-        if ($request->has('picture')) {
-            $dataArr['picture'] = $this->upload($request);
-        }
-        if ($user->update($dataArr)) {
-            return $this->show($id);
-        }
-        return false;
-    }
 
-    public function upload($request) {
-        //remove already existing file
-        $path = $this->model->picture_url->upload_path;
-        _unlink($path . "/" . $request->picture);
-        //upload and update image
-        return uploadFile($path, $request->picture);
+       return $this->model->where('id', '=', $id)->update($request);
+
     }
 
 }

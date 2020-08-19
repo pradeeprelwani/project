@@ -4,17 +4,24 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Hobby;
+use App\UserFriend;
+use App\UserBlock;
 use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
 use App\Repositories\BaseRepository;
+use Illuminate\Support\Facades\Auth;
+
 class UserController extends Controller {
 
     protected $user;
     protected $base;
+    protected $userFriend;
+    protected $userBlocked;
 
     public function __construct() {
         $this->user = new UserRepository();
-        $this->base= new BaseRepository(new Hobby());
+        $this->base = new BaseRepository(new Hobby());
+        $this->userFriend = new BaseRepository(new UserFriend());
     }
 
     /**
@@ -23,19 +30,11 @@ class UserController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        if ($request->ajax()) {
 
-            return datatables($this->user->userListing($request->all()))
-                            ->addColumn('action', function ($users) {
-                                return '<a href="javascript:void(0);" onclick="changeStatus(this)"  data-url="#" class="btn btn-primary">Send Request</a>
-                                        <a href="javascript:void(0);" onclick="deleteRecord(this)"  data-url="#" class="btn btn-danger delete-confirm" title="Delete">Block</a>';
-                            })
-                            ->rawColumns(['action'])
-                            ->make(true);
-        }
-        $data['hobbies']=$this->base->listing(['is_active'=>'1']);
-       
-        return view('user.index',$data);
+        $data['users'] = $this->user->userListing($request->all());
+        $data['hobbies'] = $this->base->listing(['is_active' => '1']);
+
+        return view('user.index', $data);
     }
 
     /**
@@ -96,6 +95,55 @@ class UserController extends Controller {
      */
     public function destroy(UserHobby $userHobby) {
         //
+    }
+
+    public function sendRequest(Request $request) {
+        try {
+
+            $data['user_following_id'] = (int) $request->user_following_id;
+            $data['user_id'] = Auth::user()->id;
+            $ifAlreadyFollow = $this->user->checkIfAlreadyFollowing($data);
+            if ($ifAlreadyFollow > 0) {
+                throw new \Exception("Already following this account");
+            }
+            unset($data['user_id']);
+            Auth::user()->following()->attach($data);
+            return redirect()->back()->with('success', "Request sent");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function blockUser(Request $request) {
+        try {
+
+            $data['user_following_id'] = (int) $request->user_id;
+            $data['user_id'] = Auth::user()->id;
+
+            Auth::user()->blocked()->attach($data);
+            return redirect()->back()->with('success', "Blocked");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function pendingRequests(Request $request) {
+        try {
+            $data['users'] = $this->user->getPendingRequests();
+            return view('user.pending_requests', $data);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function acceptRequest(Request $request) {
+        try {
+            $data['status']='accepted';
+            $this->userFriend->update($data, $request->request_id);
+            return redirect()->back()->with('success', "Request Accepted");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
 }

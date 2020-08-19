@@ -70,10 +70,13 @@ echo json_encode([
             </nav>
             <main class="py-4">
                 <div class="container">
+                    @if(session()->has('error'))<div class="alert alert-danger">{{session()->get('error')}}</div>@endif
+                    @if(session()->has('success'))<div class="alert alert-success">{{session()->get('success')}}</div>@endif
                     <div class="row justify-content-center">
                         <div class="col-md-2">
                             <ul class="list-group">
                                 <li class="list-group-item"><a href="{{route('user.index')}}">Users</a></li>
+                                <li class="list-group-item"><a href="{{route('user.pending_requests')}}">Pending Request</a></li>
                             </ul>
                         </div>
                         <div class="col-md-10">
@@ -86,7 +89,4 @@ echo json_encode([
     </body>
     <script src="{{asset('js/jquery-3.2.1.min.js')}}"></script>
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
-     <script src="{{asset('js/jquery.dataTables.min.js')}}" type="text/javascript"></script>
-        <script src="{{asset('js/dataTables.bootstrap4.min.js')}}" type="text/javascript"></script>
-        @yield('additional_js')
-</html>
+  </html>

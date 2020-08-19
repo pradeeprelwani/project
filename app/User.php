@@ -6,7 +6,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\UserHobby;
-
+use App\UserFriend;
+use App\UserBlock;
 class User extends Authenticatable {
 
     use Notifiable;
@@ -17,7 +18,7 @@ class User extends Authenticatable {
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','gender'
+        'name', 'email', 'password', 'gender'
     ];
 
     /**
@@ -40,6 +41,14 @@ class User extends Authenticatable {
 
     public function hobbies() {
         return $this->belongsToMany(UserHobby::class, 'user_hobbies');
+    }
+
+    public function following() {
+        return $this->belongsToMany(User::class, 'user_friends', 'user_id', 'user_following_id');
+    }
+
+    public function blocked() {
+        return $this->belongsToMany(User::class, 'user_blocks', 'user_id', 'block_user_id');
     }
 
 }

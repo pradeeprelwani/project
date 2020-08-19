@@ -14,5 +14,5 @@ interface BaseRepositoryInterface {
 
     public function destroy($id);
 
-    public function upload($request);
+  
 }

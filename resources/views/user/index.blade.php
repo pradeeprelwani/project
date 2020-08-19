@@ -14,11 +14,12 @@
     <div class="col-md-12 grid-margin">
         <div class="card">
             <div class="card-body">
-                <form>
+                <form action="{{route('user.index')}}" method="GET">
                     <div class="row">
+
                         <div class="col-md-5">
                             <label for="Hobbes">Hobbies</label>
-                            <select class="form-control" id="hobbies">
+                            <select name="hobbies" class="form-control" id="hobbies">
                                 <option value="">Select</option>
                                 @if($hobbies)
                                 @foreach($hobbies as $hobby)
@@ -27,19 +28,19 @@
                                 @endif
                             </select>
                         </div>
-                        <div class="col-md-5">
-
-                            <label for="Hobbes">Hobbes</label>
-                            <select class="form-control" id="gender">
+                        <div class="col-md-4">
+                            <label for="Gender">Gender</label>
+                            <select name="gender"  class="form-control" id="gender">
                                 <option value="">Select</option>
-
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <button type="button" id="ajax-filter" class="btn btn-primary">Submit</button>
+                        <div class="col-md-3">
+                            <button type="submit" id="ajax-filter" class="btn btn-primary">Submit</button>
+                            <a href="{{route('user.index')}}" class="btn btn-primary">Reset</a>
                         </div>
+
                     </div>
 
 
@@ -55,12 +56,36 @@
                                 <th width="14%">Name</th>
                                 <th width="10%">Email</th>
                                 <th width="3%">Gender</th>
-                                <th width="22%">Created Date</th>
+                                <th width="20%">Created Date</th>
                                 <th width="25%">Action</th>
                             </tr>
                         </thead>
-                    </table>
+                        @if($users)
+                        @foreach($users as $user)
+                        <tbody>
+                            <tr>
 
+                                <th width="5%">{{$user['id']}}</th>
+                                <th width="14%">{{$user['name']}}</th>
+                                <th width="10%">{{$user['email']}}</th>
+                                <th width="3%">{{$user['gender']}}</th>
+                                <th width="20%">{{$user['created_at']}}</th>
+                                <th width="25%"><a href="{{route('user.send_request', $user['id'])}}"  class="btn btn-primary">Send Request</a>                      
+                                    <a href="{{route('user.block_user', $user['id']) }}"    class="btn btn-danger delete-confirm" title="Delete">Block</a></th>
+                            </tr>
+                        </tbody>
+                        @endforeach
+                        @endif
+                    </table>
+                    <?php
+                    $data=[];
+                    if (request()->has('gender')) {
+                        $data['gender'] = request()->gender;
+                    }if (request()->has('hobbies')) {
+                        $data['hobbies'] = request()->hobbies;
+                    }
+                    echo $users->appends($data)->links();
+                    ?>
                 </div>
             </div>
         </div>
@@ -68,44 +93,5 @@
 
 
 </div>
-@section('additional_js')
 
-<script>
-    $(document).ready(function () {
-        $('.datatable').DataTable({
-            processing: true,
-            serverSide: true,
-            order: [[0, "desc"]],
-            ajax: {
-                url: "{{route('user.index')}}",
-                dataSrc: "data",
-            },
-            columns: [
-                {data: 'id', name: 'id'},
-                {data: 'name', name: 'name'},
-                {data: 'email', name: 'email'},
-                {data: 'gender', name: 'gender', orderable: false},
-                {data: 'created_at', name: 'created_at'},
-                {data: 'action', name: 'action', orderable: false}
-            ]
-        });
-    });
-    $("#ajax-filter").click(function(){
-        let hobbies= $("#hobbies").val();
-        let gender= $("#gender").val();
-        $.ajax({
-           url: "{{route('user.index')}}",
-           method: "GET",
-           dataType:"json",
-           success:function(response){
-               
-           },
-           error:function(error){
-               
-           }
-           
-        })
-    })
-</script>
-@endsection
 @endsection
