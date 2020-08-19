@@ -71,12 +71,12 @@ echo json_encode([
             <main class="py-4">
                 <div class="container">
                     <div class="row justify-content-center">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <ul class="list-group">
-                                <li class="list-group-item">Users</li>
+                                <li class="list-group-item"><a href="{{route('user.index')}}">Users</a></li>
                             </ul>
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-10">
                             @yield('content')
                         </div>
                     </div>
@@ -86,4 +86,7 @@ echo json_encode([
     </body>
     <script src="{{asset('js/jquery-3.2.1.min.js')}}"></script>
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
+     <script src="{{asset('js/jquery.dataTables.min.js')}}" type="text/javascript"></script>
+        <script src="{{asset('js/dataTables.bootstrap4.min.js')}}" type="text/javascript"></script>
+        @yield('additional_js')
 </html>
