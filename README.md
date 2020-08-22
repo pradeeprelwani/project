@@ -5,8 +5,8 @@
 - **/register** : for register 
 
 - **/users** :  for all users or portal excluding ourself excluding 
-                * that users which have blocked by current user and 
-                * current user send request to other user and which has still pending 
+            - that users which have blocked by current user and 
+            - current user send request to other user and which has still pending 
     -  **Send Request** :  request send to other user and 
                         when other user will login and it will be listing in pending request section
                         record insert into user_friends table
