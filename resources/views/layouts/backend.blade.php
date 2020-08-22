@@ -76,6 +76,7 @@ echo json_encode([
                         <div class="col-md-2">
                             <ul class="list-group">
                                 <li class="list-group-item"><a href="{{route('user.index')}}">Users</a></li>
+                                <li class="list-group-item"><a href="{{route('user.friends')}}">Friends</a></li>
                                 <li class="list-group-item"><a href="{{route('user.pending_requests')}}">Pending Request</a></li>
                             </ul>
                         </div>
@@ -89,4 +90,4 @@ echo json_encode([
     </body>
     <script src="{{asset('js/jquery-3.2.1.min.js')}}"></script>
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
-  </html>
+</html>

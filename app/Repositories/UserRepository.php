@@ -32,7 +32,7 @@ class UserRepository extends BaseRepository {
         if (isset($data['hobbies']) && $data['hobbies'] != "") {
             $query = $query->where('uh.id', '=', $data['hobbies']);
         }
-        $query = $query->paginate(10);
+        $query = $query->groupBy('u.id', 'u.name', 'u.email', 'u.created_at', 'u.gender')->paginate(10);
         return $query;
     }
 
@@ -40,8 +40,19 @@ class UserRepository extends BaseRepository {
         $query = User::select('uf.id as request_id', 'u.id', 'u.name', 'u.email', 'u.created_at', 'u.gender')->from('users as u')
                 ->join('user_friends as uf', 'uf.user_following_id', '=', 'u.id')
                 ->where('uf.status', '=', 'pending')
-                ->where('uf.user_id', '=', Auth::user()->id)
-                ->where('uf.user_following_id', '!=', Auth::user()->id);
+                ->where('uf.user_following_id', '=', Auth::user()->id)
+                ->where('uf.user_id', '!=', Auth::user()->id);
+        $query = $query->paginate(10);
+
+        return $query;
+    }
+
+    public function myFriends() {
+        $query = User::select('uf.id as request_id', 'u.id', 'u.name', 'u.email', 'u.created_at', 'u.gender')->from('users as u')
+                ->join('user_friends as uf', 'uf.user_following_id', '=', 'u.id')
+                ->where('uf.status', '=', 'accepted')
+                ->where('uf.user_following_id', '!=', Auth::user()->id)
+                ->where('uf.user_id', '=', Auth::user()->id);
         $query = $query->paginate(10);
 
         return $query;

@@ -25,7 +25,6 @@
                                 <th width="10%">Email</th>
                                 <th width="3%">Gender</th>
                                 <th width="20%">Created Date</th>
-                                <th width="25%">Action</th>
                             </tr>
                         </thead>
                         @if($users)
@@ -38,9 +37,7 @@
                                 <th width="10%">{{$user['email']}}</th>
                                 <th width="3%">{{$user['gender']}}</th>
                                 <th width="20%">{{$user['created_at']}}</th>
-                                <th width="25%"><a href="{{route('user.accept_request', $user['request_id'])}}"  class="btn btn-primary">Accept</a>                      
-                                    <a href="{{route('user.delete_request', $user['request_id']) }}"    class="btn btn-danger delete-confirm" title="Delete">Reject</a></th>
-                            </tr>
+                               </tr>
                         </tbody>
                         @endforeach
                         @endif

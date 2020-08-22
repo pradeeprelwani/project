@@ -56,47 +56,6 @@ class UserController extends Controller {
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\UserHobby  $userHobby
-     * @return \Illuminate\Http\Response
-     */
-    public function show(UserHobby $userHobby) {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\UserHobby  $userHobby
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(UserHobby $userHobby) {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\UserHobby  $userHobby
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, UserHobby $userHobby) {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\UserHobby  $userHobby
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(UserHobby $userHobby) {
-        //
-    }
-
     public function sendRequest(Request $request) {
         try {
 
@@ -106,8 +65,7 @@ class UserController extends Controller {
             if ($ifAlreadyFollow > 0) {
                 throw new \Exception("Already following this account");
             }
-            unset($data['user_id']);
-            Auth::user()->following()->attach($data);
+            $this->userFriend->create($data);
             return redirect()->back()->with('success', "Request sent");
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -117,11 +75,24 @@ class UserController extends Controller {
     public function blockUser(Request $request) {
         try {
 
-            $data['user_following_id'] = (int) $request->user_id;
+            $data['block_user_id'] = (int) $request->user_id;
             $data['user_id'] = Auth::user()->id;
-
+            $isBlock = UserBlock::where($data)->count();
+            if ($isBlock) {
+                throw new \Exception("Already blocked this account");
+            }
+            UserBlock::create($data);
             Auth::user()->blocked()->attach($data);
             return redirect()->back()->with('success', "Blocked");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function myFriends(Request $request) {
+        try {
+            $data['users'] = $this->user->myFriends();
+            return view('user.friend', $data);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -138,9 +109,19 @@ class UserController extends Controller {
 
     public function acceptRequest(Request $request) {
         try {
-            $data['status']='accepted';
-            $this->userFriend->update($data, $request->request_id);
+            $user = UserFriend::findOrFail($request->request_id);
+            $user->status = 'accepted';
+            $user->save();
             return redirect()->back()->with('success', "Request Accepted");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function deleteRequest(Request $request) {
+        try {
+            UserFriend::destroy($request->request_id);
+            return redirect()->back()->with('success', "Request Rejected");
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }

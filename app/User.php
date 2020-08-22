@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use App\UserHobby;
 use App\UserFriend;
 use App\UserBlock;
+
 class User extends Authenticatable {
 
     use Notifiable;

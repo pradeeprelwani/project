@@ -25,4 +25,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/users', 'UserController@index')->name('user.index');
     Route::get('/pending-requests', 'UserController@pendingRequests')->name('user.pending_requests');
     Route::get('/accept-request/{request_id}', 'UserController@acceptRequest')->name('user.accept_request');
+    Route::get('/delete-request/{request_id}', 'UserController@deleteRequest')->name('user.delete_request');
+    Route::get('/friends', 'UserController@myFriends')->name('user.friends');
 });
