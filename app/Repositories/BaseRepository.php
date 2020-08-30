@@ -32,10 +32,13 @@ class BaseRepository implements BaseRepositoryInterface {
 
     public function update($request, $id) {
 
-       return $this->model->where('id', '=', $id)->update($request);
-
+        return $this->model->where('id', '=', $id)->update($request);
     }
-    
+
+    public function updateMultiple($request, $ids) {
+        return $this->model->whereIn('id', $ids)->update($request);
+    }
+
     public function uploadFile($image) {
         $name = time() . '.' . $image->getClientOriginalName();
         $image->move(public_path() . '/image/', $name);

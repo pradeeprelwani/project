@@ -17,21 +17,36 @@
             <div class="card-body">
 
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped datatable" id="datatable">
-                        <thead>
-                            <tr>
-                                <th width="5%"><input type="checkbox" id="all_checkbox" name="all_checkbox"></th>
-                                <th width="10%">Rider Name</th>
-                                <th width="10%">Rider Phone</th>
-                                <th width="15%">Source</th>
-                                <th width="15%">Destination</th>
-                                <th width="5%">Status</th>
-                                <th width="10%">Created Date</th>
-                                <th width="15%">Action</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <form class="form-inline">
 
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label for="" class="">Status</label>
+                            <select id="ride_status" name="status" class="form-control">
+                                <option value="">Select</option>
+                                <option value="accepted">Accepted</option>
+                                <option value="rejected">Rejected</option>
+                                
+                            </select>
+                            
+                        </div>
+                        <button type="button" class="change_ride_status btn btn-primary mb-2">Submit</button>
+                    </form>
+                        <table class="table table-bordered table-striped datatable" id="datatable">
+                            <thead>
+                                <tr>
+                                    <th width="5%"><input type="checkbox" id="example-select-all" name="all_checkbox"></th>
+                                    <th width="10%">Rider Name</th>
+                                    <th width="10%">Rider Phone</th>
+                                    <th width="15%">Source</th>
+                                    <th width="15%">Destination</th>
+                                    <th width="5%">Status</th>
+                                    <th width="10%">Created Date</th>
+                                    <th width="15%">Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+
+                        
                 </div>
             </div>
         </div>
@@ -51,9 +66,9 @@ $(document).ready(function () {
             dataSrc: "data",
         },
         columns: [
-            {data: 'id', name: 'id'},  
+            {data: 'id', name: 'id', orderable: false},
             {data: 'rider', name: 'rider'},
-             {data: 'rider_phone', name: 'rider_phone'},
+            {data: 'rider_phone', name: 'rider_phone'},
             {data: 'source_address', name: 'source_address'},
             {data: 'destination_address', name: 'destination_address'},
             {data: 'status', name: 'status'},
@@ -63,14 +78,11 @@ $(document).ready(function () {
     });
 
 
-    $("#all_checkbox").on("change", function () {
-        oTable.$("input[type='checkbox']").attr('checked', $(this.checked));
-    });
+
+
+
+
 });
-
-
-
-
 
 </script>
 @endsection

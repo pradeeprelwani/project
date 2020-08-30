@@ -276,13 +276,85 @@ $("#driver-login-form").validate({
 });
 
 //select all rides in driver pane
-$("#all_checkbox").click(function () {
-    let rides_checkbox = $(".rides_checkbox").length;
+$("#example-select-all").click(function () {
+    if (this.checked) {
+        $("input.rides_checkbox").each(function (index, value) {
+            $(value).prop('checked', true);
+        });
+    } else {
+        $("input.rides_checkbox").each(function (index, value) {
+            $(value).prop('checked', false);
+        });
+    }
+});
+
+
+//uncheck main checkbox
+function selectCheckbox(_this) {
+    let total_checkbox = $("input.rides_checkbox").length;
+    let total_checked = $("input.rides_checkbox:checked").length
+
+    var count = 0;
     $("input.rides_checkbox").each(function (index, value) {
-        $(value).prop('checked', true)
-        // $("#".value.attr('id')).val();
-        console.log($(value).attr('checked', 'checked'));
-    })
+        if ($(this).prop("checked") == true) {
+            count++;
+        }
+    });
+    if (count != total_checkbox) {
+        $("#example-select-all").prop("checked", false);
+    } else {
+        $("#example-select-all").prop("checked", true);
+    }
+
+}
+
+
+//accept/rejected rides by driver
+$(".change_ride_status").click(function () {
+    if ($('input.rides_checkbox:checked').length > 0 && $("#ride_status").val() != "") {
+        var checkbox_id = "";
+        var data = {};
+        $('input.rides_checkbox:checked').each(function (index, value) {
+            checkbox_id += this.value + ",";
+        });
+
+        var result = $('input.rides_checkbox:checked').map(function (i, opt) {
+            return $(opt).val();
+        }).toArray().join(',');
+
+        data.id = result;
+        data.status = $("#ride_status").val();
+        data._token = token();
+
+        $.ajax({
+            'method': 'POST',
+            url: baseUrl() + '/driver/ride/status',
+            data: data,
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === true) {
+                    var oTable = $('.datatable').DataTable();
+                    oTable.columns.adjust().draw()
+                    $(".card-body").prepend('<div class="msg-alert alert alert-success">' + response.message + '</div>')
+                } else {
+                    $(".card-body").prepend('<span class="msg-alert alert alert-danger">' + response.message + '</span>')
+                }
+            },
+            error: function (response) {
+                if (response.status === 422) {
+                    $("span.msg-alert").remove();
+                    $.each(response.responseJSON.errors, (index, value) => {
+                        $("#" + index).after('<span class="msg-alert text-danger">' + value[0] + '</span>')
+                    });
+                } else {
+                    $(".card-body").prepend('<span class="msg-alert text-danger">' + response.statusText + '</span>')
+                }
+            }
+        });
+
+    } else {
+        alert("Please select rides or status");
+    }
 })
 
 function changeRideStatus(_this) {
@@ -319,7 +391,7 @@ function changeRideStatus(_this) {
         }
     });
 }
-;
+
 
 //book a ride from rider side
 $("#book-ride").validate({

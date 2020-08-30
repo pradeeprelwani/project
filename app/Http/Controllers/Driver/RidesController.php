@@ -28,7 +28,7 @@ class RidesController extends Controller {
             $driver_id = Auth::guard('drivers')->user()->id;
             return datatables($this->rides->getNearByRides())
                             ->addColumn('id', function ($rides) {
-                                return '<input class="rides_checkbox" type="checkbox" value="' . $rides->id . '" name="rides[]">';
+                                return '<input  onclick="selectCheckbox(this)" class="rides_checkbox dt-body-center" type="checkbox" value="' . $rides->id . '" name="rides[]">';
                             })
                             ->addColumn('rider', function ($rides) {
                                 return $rides->rider[0]->name;
@@ -50,16 +50,14 @@ class RidesController extends Controller {
     }
 
     public function changeRideStatus(Request $request) {
-
         if ($request->ajax()) {
 
             $this->validate($request, [
                 'status' => 'in:rejected,accepted',
-                'id' => 'exists:rides,id'
             ]);
             try {
                 $condition = ['driver_id' => Auth::guard('drivers')->user()->id, 'status' => $request->status];
-                $this->base->update($condition, $request->id);
+                $this->base->updateMultiple($condition, explode(",",$request->id));
                 return ['message' => 'Ride ' . ucfirst($request->status) . '  successfully', 'status' => true, 'url' => route('rides.index')];
             } catch (\Exception $e) {
                 return ['message' => $e->getMessage(), 'status' => false];

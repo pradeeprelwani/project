@@ -4,7 +4,7 @@
 <div class="row page-title-header">
     <div class="col-12">
         <div class="page-header">
-            <h4 class="page-title">Cards</h4>
+            <h4 class="page-title">Rides</h4>
         </div>
     </div>
 </div>
@@ -14,7 +14,7 @@
             <div class="card-body">
 
 
-                <a href="{{route('card.index')}}" class="btn btn-primary">Cards</a>
+                <a href="{{route('rider.rides.index')}}" class="btn btn-primary">Rides</a>
                 <form id="book-ride" novalidate=""  action="{{route('rider.rides.store')}}" method="POST">
                     <input type="hidden" name="_token" value="{{csrf_token()}}">
                     <div class="row">
