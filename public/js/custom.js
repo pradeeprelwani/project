@@ -371,6 +371,7 @@ function changeRideStatus(_this) {
         dataType: 'json',
         success: function (response) {
             $("span.alert").remove();
+            removeAlert()
             if (response.status === true) {
                 var oTable = $('.datatable').DataTable();
                 oTable.columns.adjust().draw()
