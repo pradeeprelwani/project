@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
-                    <form id="login-form" method="POST" action="{{ route('login') }}" novalidate="">
+                    <form id="driver-login-form" method="POST" action="{{ route('driver.login.post') }}" novalidate="">
                         @csrf
 
                         <div class="form-group row">

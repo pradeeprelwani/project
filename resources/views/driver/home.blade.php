@@ -1,4 +1,4 @@
-@extends('layouts.backend')
+@extends('layouts.driver_backend')
 
 @section('content')
 
@@ -12,7 +12,7 @@
                         </div>
                     @endif
 
-                    You are logged in! rider
+                    You are logged in! driver
                 </div>
             </div>
         

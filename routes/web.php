@@ -17,14 +17,28 @@ Route::get('/', function () {
 
 Auth::routes();
 Route::group(['middleware' => 'auth'], function() {
-
-
     Route::get('/home', 'HomeController@index')->name('home');
-    Route::get('/send-request/{user_following_id}', 'UserController@sendRequest')->name('user.send_request');
-    Route::get('/block-user/{user_id}', 'UserController@blockUser')->name('user.block_user');
-    Route::get('/users', 'UserController@index')->name('user.index');
-    Route::get('/pending-requests', 'UserController@pendingRequests')->name('user.pending_requests');
-    Route::get('/accept-request/{request_id}', 'UserController@acceptRequest')->name('user.accept_request');
-    Route::get('/delete-request/{request_id}', 'UserController@deleteRequest')->name('user.delete_request');
-    Route::get('/friends', 'UserController@myFriends')->name('user.friends');
+
+    Route::group(['prefix' => 'card','namespace'=>'Rider'], function() {
+        Route::get('/', 'CardController@index')->name('card.index');
+        Route::get('/create', 'CardController@create')->name('card.create');
+        Route::post('/store', 'CardController@store')->name('card.store');
+    });
+    
+     Route::get('/rides', 'Rider\RidesController@index')->name('rider.rides.index');
+      Route::get('/create', 'Rider\RidesController@create')->name('rider.rides.create');
+     Route::post('/create', 'Rider\RidesController@store')->name('rider.rides.store'); 
+});
+Route::group(['prefix' => 'driver'], function() {
+    Route::get('/login', 'Auth\DriverAuthController@login')->name('driver.login');
+    Route::post('/login', 'Auth\DriverAuthController@loginPost')->name('driver.login.post');
+    Route::get('/register', 'Auth\DriverAuthController@register')->name('driver.register');
+    Route::post('/register', 'Auth\DriverAuthController@store')->name('driver.store');
+
+    Route::group(['middleware' => 'drivers','namespace'=>'Driver'], function() {
+        Route::get('/home', 'HomeController@index')->name('driver.home');
+        Route::get('/rides', 'RidesController@index')->name('rides.index');
+        Route::post('/ride/status', 'RidesController@changeRideStatus')->name('rides.status');
+        Route::post('/logout', 'Auth\DriverAuthController@index')->name('driver.logout');
+    });
 });

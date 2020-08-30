@@ -1,15 +1,13 @@
 <?php
 
 namespace App;
-use App\User;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Hobby extends Model {
 
-    protected $fillable = ['name', 'is_active'];
+    protected $table='hobbies';
+    protected $fillable = ['name', 'status'];
  
-     public function users()
-    {
-        return $this->belongsToMany(User::class, 'user_hobbies');
-    }
+     
 }

@@ -5,13 +5,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <meta name="base_url" content="{{ env('APP_URL') }}">
+         <meta name="base_url" content="{{ env('APP_URL') }}">
         <title>{{ config('app.name', 'Laravel') }}</title>
         <!-- Fonts -->
         <link rel="dns-prefetch" href="//fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
         <!-- Styles -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <script>
             window.Laravel = <?php
 echo json_encode([
@@ -39,7 +40,7 @@ echo json_encode([
                         <!-- Right Side Of Navbar -->
                         <ul class="navbar-nav ml-auto">
                             <!-- Authentication Links -->
-                            @guest
+                            @if(!Auth::guard('drivers')->user())
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
@@ -51,10 +52,10 @@ echo json_encode([
                             @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }} 
+                                    {{ Auth::guard('drivers')->user()->name }} 
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                    <a class="dropdown-item" href="{{ route('driver.logout') }}"
                                        onclick="event.preventDefault();
                                                document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
@@ -76,8 +77,7 @@ echo json_encode([
                     <div class="row justify-content-center">
                         <div class="col-md-2">
                             <ul class="list-group">
-                                <li class="list-group-item"><a href="{{route('card.index')}}">Card</a></li>
-                                <li class="list-group-item"><a href="{{route('rider.rides.index')}}">My Rides</a></li>
+                                <li class="list-group-item"><a href="{{route('rides.index')}}">Rides</a></li>
                             </ul>
                         </div>
                         <div class="col-md-10">
@@ -88,7 +88,7 @@ echo json_encode([
             </main>
         </div>
     </body>
-
+    
     <script src="{{asset('js/jquery-3.2.1.min.js')}}"></script>
     <script src="{{asset('js/jquery.validate.min.js')}}"></script>
     @yield('additional_js')

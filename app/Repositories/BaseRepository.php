@@ -27,7 +27,6 @@ class BaseRepository implements BaseRepositoryInterface {
     }
 
     public function create($request) {
-
         return $this->model->create($request);
     }
 
@@ -35,6 +34,12 @@ class BaseRepository implements BaseRepositoryInterface {
 
        return $this->model->where('id', '=', $id)->update($request);
 
+    }
+    
+    public function uploadFile($image) {
+        $name = time() . '.' . $image->getClientOriginalName();
+        $image->move(public_path() . '/image/', $name);
+        return $name;
     }
 
 }
